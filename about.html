@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我们 - 灵草鉴</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .about-hero {
+      padding-top: calc(var(--nav-height) + 60px);
+      padding-bottom: 60px;
+      background: linear-gradient(165deg, #F0F7F4 0%, #FFFFFF 50%, #FDF8F0 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(45,106,79,0.04), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .about-hero h1 {
+      font-family: var(--font-serif);
+      font-size: 44px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .about-hero .subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.9;
+    }
+
+    .hero-stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 40px;
+    }
+
+    .hero-stat-item {
+      text-align: center;
+    }
+
+    .hero-stat-item .num {
+      font-family: var(--font-serif);
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .hero-stat-item .label {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* 使命愿景 */
+    .mission-section {
+      padding: 80px 0;
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .mission-card {
+      padding: 36px 28px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .mission-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    .mission-card .icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .mission-card h3 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .mission-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+
+    /* 团队介绍 */
+    .team-section {
+      padding: 80px 0;
+      background: var(--bg-cream);
+    }
+
+    .team-intro {
+      max-width: 700px;
+      margin: 0 auto 48px;
+      text-align: center;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .team-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 28px 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .team-card:hover {
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-2px);
+    }
+
+    .team-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .team-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .team-card .title {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .team-card .bio {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* 技术架构 */
+    .tech-section {
+      padding: 80px 0;
+    }
+
+    .tech-architecture {
+      background: var(--primary-darker);
+      color: white;
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-architecture::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .tech-architecture h3 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .tech-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .tech-layer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .tech-layer-label {
+      width: 100px;
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-lighter);
+      text-align: right;
+    }
+
+    .tech-layer-content {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tech-chip {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      transition: var(--transition);
+    }
+
+    .tech-chip:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .tech-connector {
+      width: 100px;
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+
+    .tech-connector .arrow {
+      color: var(--primary-lightest);
+      font-size: 16px;
+    }
+
+    /* 合作伙伴 */
+    .partner-section {
+      padding: 80px 0;
+      background: var(--bg-light);
+    }
+
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .partner-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 32px 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+
+    .partner-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary-lightest);
+    }
+
+    .partner-card .icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .partner-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .partner-card .type {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 联系我们 */
+    .contact-section {
+      padding: 80px 0;
+    }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .contact-info > p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 32px;
+    }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .contact-item .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .contact-item .label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .contact-item .value {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* 联系表单 */
+    .contact-form {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 36px;
+    }
+
+    .contact-form h4 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      transition: var(--transition);
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* 价值观 */
+    .values-section {
+      padding: 80px 0;
+      background: var(--bg-green-light);
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .value-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      border: 1px solid var(--border-light);
+      display: flex;
+      gap: 20px;
+      transition: var(--transition);
+    }
+
+    .value-card:hover {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .value-card .icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .value-card h4 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .value-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+      .about-hero h1 { font-size: 32px; }
+      .hero-stats-row { gap: 24px; flex-wrap: wrap; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .tech-architecture { padding: 28px; }
+      .tech-layer { flex-direction: column; align-items: flex-start; }
+      .tech-layer-label { width: auto; text-align: left; }
+      .tech-connector { display: none; }
+      .partner-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-layout { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">鉴</div>
+        <span>灵草鉴</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="identify.html">AI鉴定</a>
+        <a href="herb-database.html">药材百科</a>
+        <a href="research.html">研究资讯</a>
+        <a href="about.html" class="active">关于我们</a>
+        <a href="identify.html" class="nav-cta">开始鉴定</a>
+      </div>
+      <div class="nav-toggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="about-hero">
+    <div class="container">
+      <h1>以AI之力，承本草之精</h1>
+      <p class="subtitle">我们致力于将前沿人工智能技术与传统中药学深度融合，为中药材鉴定打造精准、高效、可信赖的智能化解决方案</p>
+      <div class="hero-stats-row">
+        <div class="hero-stat-item">
+          <div class="num">30+</div>
+          <div class="label">核心成员</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="num">8年</div>
+          <div class="label">技术深耕</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="num">20+</div>
+          <div class="label">合作机构</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="num">15项</div>
+          <div class="label">发明专利</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使命愿景 -->
+  <section class="mission-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">使命与愿景</span>
+        <h2 class="section-title">传承精华，守正创新</h2>
+        <p class="section-desc">让每一味中药材都能被准确鉴定，让中医药文化的智慧在数字时代焕发新生</p>
+      </div>
+      <div class="mission-grid">
+        <div class="mission-card">
+          <span class="icon">🎯</span>
+          <h3>使命</h3>
+          <p>以人工智能技术赋能中药鉴定，构建覆盖全品种、全流程的智能化鉴定体系，保障中药材质量安全，推动中医药产业高质量发展。</p>
+        </div>
+        <div class="mission-card">
+          <span class="icon">🔭</span>
+          <h3>愿景</h3>
+          <p>成为全球领先的中药AI鉴定平台，建立中药材数字化鉴定的行业标准，让AI鉴定技术惠及每一位中医药从业者与消费者。</p>
+        </div>
+        <div class="mission-card">
+          <span class="icon">💎</span>
+          <h3>价值观</h3>
+          <p>科学严谨——以证据为基础，不妥协准确率；传承尊重——敬畏中医药千年智慧；开放协作——与行业共建生态；持续创新——永远追求更优解。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心价值观 -->
+  <section class="values-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">核心价值</span>
+        <h2 class="section-title">我们坚守的信念</h2>
+      </div>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="icon" style="background:#D8F3DC;">🔬</div>
+          <div>
+            <h4>科学严谨</h4>
+            <p>每一项鉴定结果都经过严格的验证与测试，模型训练数据来源可溯，鉴定逻辑透明可解释，对每一个百分点的准确率提升都锱铢必较。</p>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="icon" style="background:#FEF3C7;">📚</div>
+          <div>
+            <h4>传承尊重</h4>
+            <p>我们深知AI是工具而非替代，始终尊重中医药千年积累的鉴别经验与理论体系，技术的设计以辅助和增强老药工的判断为出发点。</p>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="icon" style="background:#DBEAFE;">🤝</div>
+          <div>
+            <h4>开放协作</h4>
+            <p>积极与高校、科研院所、药检机构、企业合作，开放数据集与模型接口，共建中药AI鉴定生态，推动行业整体进步。</p>
+          </div>
+        </div>
+        <div class="value-card">
+          <div class="icon" style="background:#F3E8FF;">⚡</div>
+          <div>
+            <h4>持续创新</h4>
+            <p>紧跟AI前沿技术，从CNN到Transformer再到多模态大模型，持续探索更优的鉴定方案，永不停留在舒适区。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 团队介绍 -->
+  <section class="team-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">核心团队</span>
+        <h2 class="section-title">跨学科融合的专业团队</h2>
+        <p class="section-desc">汇聚AI算法、中药学、计算机视觉、分子生物学等多领域专家</p>
+      </div>
+      <p class="team-intro">
+        灵草鉴团队由来自清华大学、中国中医科学院、中科院自动化所等顶级机构的30余位研究人员组成。团队兼具深厚的AI技术功底和扎实的中药学专业背景，是国内最早从事AI中药鉴定研究的团队之一。
+      </p>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#2D6A4F,#40916C);">张</div>
+          <h4>张明远</h4>
+          <div class="title">首席科学家 / 创始人</div>
+          <div class="bio">清华大学计算机系教授，IEEE Fellow，多模态学习领域知名学者，发表顶会论文100+篇。</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#92400E,#D97706);">李</div>
+          <h4>李药兰</h4>
+          <div class="title">中药学首席专家</div>
+          <div class="bio">中国中医科学院研究员，国家药典委员会委员，从事中药鉴定研究30余年。</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#1E40AF,#3B82F6);">王</div>
+          <h4>王思源</h4>
+          <div class="title">AI算法负责人</div>
+          <div class="bio">中科院自动化所博士，CVPR/ICCV最佳论文获得者，视觉识别与多模态融合专家。</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#6B21A8,#A855F7);">陈</div>
+          <h4>陈基因</h4>
+          <div class="title">分子鉴定负责人</div>
+          <div class="bio">复旦大学生命科学学院副教授，DNA条形码技术专家，主持制定多项中药材分子鉴定标准。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术架构 -->
+  <section class="tech-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">技术底座</span>
+        <h2 class="section-title">系统技术架构</h2>
+        <p class="section-desc">从前端采集到后端推理的全链路AI鉴定系统</p>
+      </div>
+      <div class="tech-architecture">
+        <h3>灵草鉴技术架构全景</h3>
+        <div class="tech-layers">
+          <div class="tech-layer">
+            <div class="tech-layer-label">应用层</div>
+            <div class="tech-layer-content">
+              <span class="tech-chip">Web鉴定平台</span>
+              <span class="tech-chip">移动端App</span>
+              <span class="tech-chip">批量鉴定API</span>
+              <span class="tech-chip">企业私有化部署</span>
+            </div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-connector"><span class="arrow">↕</span></div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-layer-label">服务层</div>
+            <div class="tech-layer-content">
+              <span class="tech-chip">图像预处理服务</span>
+              <span class="tech-chip">多模型推理引擎</span>
+              <span class="tech-chip">知识图谱服务</span>
+              <span class="tech-chip">报告生成服务</span>
+            </div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-connector"><span class="arrow">↕</span></div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-layer-label">模型层</div>
+            <div class="tech-layer-content">
+              <span class="tech-chip">ResNet-152</span>
+              <span class="tech-chip">ViT-Large</span>
+              <span class="tech-chip">1D-CNN (光谱)</span>
+              <span class="tech-chip">GNN (知识图谱)</span>
+              <span class="tech-chip">多模态融合模块</span>
+            </div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-connector"><span class="arrow">↕</span></div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-layer-label">数据层</div>
+            <div class="tech-layer-content">
+              <span class="tech-chip">50万+图像数据集</span>
+              <span class="tech-chip">近红外光谱库</span>
+              <span class="tech-chip">DNA条形码数据库</span>
+              <span class="tech-chip">药典标准数据库</span>
+            </div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-connector"><span class="arrow">↕</span></div>
+          </div>
+          <div class="tech-layer">
+            <div class="tech-layer-label">基础设施</div>
+            <div class="tech-layer-content">
+              <span class="tech-chip">GPU集群 (A100×64)</span>
+              <span class="tech-chip">Kubernetes编排</span>
+              <span class="tech-chip">分布式存储</span>
+              <span class="tech-chip">模型服务化 (Triton)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 合作伙伴 -->
+  <section class="partner-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">合作伙伴</span>
+        <h2 class="section-title">携手共建AI鉴定生态</h2>
+        <p class="section-desc">与国内顶尖机构深度合作，推动AI鉴定技术产学研一体化</p>
+      </div>
+      <div class="partner-grid">
+        <div class="partner-card">
+          <span class="icon">🎓</span>
+          <h4>清华大学</h4>
+          <div class="type">算法研究合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">🏥</span>
+          <h4>中国中医科学院</h4>
+          <div class="type">中药学合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">🔬</span>
+          <h4>中科院自动化所</h4>
+          <div class="type">视觉AI合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">📋</span>
+          <h4>国家药典委员会</h4>
+          <div class="type">标准制定合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">💊</span>
+          <h4>中国中药协会</h4>
+          <div class="type">行业推广合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">🏛️</span>
+          <h4>各省药检所</h4>
+          <div class="type">检验验证合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">🏭</span>
+          <h4>同仁堂集团</h4>
+          <div class="type">产业应用合作</div>
+        </div>
+        <div class="partner-card">
+          <span class="icon">🌐</span>
+          <h4>世界卫生组织</h4>
+          <div class="type">国际标准合作</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系我们 -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-layout">
+        <div class="contact-info">
+          <h3>联系我们</h3>
+          <p>无论您是科研工作者、药检人员、中药企业还是对AI中药鉴定感兴趣的伙伴，我们都期待与您交流合作。</p>
+          <div class="contact-list">
+            <div class="contact-item">
+              <div class="icon">📍</div>
+              <div>
+                <div class="label">办公地址</div>
+                <div class="value">北京市海淀区清华科技园 创新大厦 A座 12层</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="icon">📧</div>
+              <div>
+                <div class="label">电子邮箱</div>
+                <div class="value">contact@lingcaojian.ai</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="icon">📞</div>
+              <div>
+                <div class="label">联系电话</div>
+                <div class="value">010-8888-6688</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="icon">💬</div>
+              <div>
+                <div class="label">微信公众号</div>
+                <div class="value">灵草鉴AI</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-form">
+          <h4>发送留言</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>姓名</label>
+              <input type="text" placeholder="您的姓名">
+            </div>
+            <div class="form-group">
+              <label>邮箱</label>
+              <input type="email" placeholder="your@email.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>机构 / 单位</label>
+            <input type="text" placeholder="所在机构或公司">
+          </div>
+          <div class="form-group">
+            <label>合作类型</label>
+            <select>
+              <option value="">请选择</option>
+              <option>学术研究合作</option>
+              <option>企业应用合作</option>
+              <option>数据标注合作</option>
+              <option>API接口接入</option>
+              <option>其他</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>留言内容</label>
+            <textarea placeholder="请描述您的需求或合作意向..."></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%;" onclick="showToast('留言已发送，我们会尽快回复！')">提交留言</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="logo-icon">鉴</div>
+            <span>灵草鉴</span>
+          </div>
+          <p>基于前沿AI技术的中药材智能鉴定平台，致力于推动中药行业数字化转型与品质保障，传承中医药文化精髓。</p>
+          <div class="footer-social">
+            <a href="#">微</a><a href="#">博</a><a href="#">知</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>产品服务</h4>
+          <ul>
+            <li><a href="identify.html">AI智能鉴定</a></li>
+            <li><a href="herb-database.html">药材百科</a></li>
+            <li><a href="#">批量鉴定</a></li>
+            <li><a href="#">API接口</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>学术资源</h4>
+          <ul>
+            <li><a href="research.html">研究论文</a></li>
+            <li><a href="#">数据集下载</a></li>
+            <li><a href="#">模型开源</a></li>
+            <li><a href="#">技术博客</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>关于我们</h4>
+          <ul>
+            <li><a href="about.html">团队介绍</a></li>
+            <li><a href="#">合作伙伴</a></li>
+            <li><a href="#">联系方式</a></li>
+            <li><a href="#">加入我们</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>2026 灵草鉴 AI中药鉴定平台 · 传承与创新</span>
+        <span>京ICP备2026XXXXXX号</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
