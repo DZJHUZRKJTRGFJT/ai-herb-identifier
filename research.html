@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>研究资讯 - 灵草鉴</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .research-hero {
+      padding-top: calc(var(--nav-height) + 48px);
+      padding-bottom: 48px;
+      background: linear-gradient(165deg, #EDE9FE 0%, #FFFFFF 60%, #F0F7F4 100%);
+      text-align: center;
+    }
+
+    .research-hero h1 {
+      font-family: var(--font-serif);
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .research-hero p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* 分类导航 */
+    .research-nav {
+      border-bottom: 1px solid var(--border-light);
+      background: white;
+      position: sticky;
+      top: var(--nav-height);
+      z-index: 100;
+    }
+
+    .research-nav .container {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+    }
+
+    .research-nav a {
+      padding: 16px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .research-nav a:hover,
+    .research-nav a.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* 置顶文章 */
+    .featured-article {
+      padding: 48px 0 0;
+    }
+
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: white;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: var(--transition);
+    }
+
+    .featured-card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .featured-img {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-img::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .featured-img .icon {
+      font-size: 72px;
+      margin-bottom: 20px;
+    }
+
+    .featured-img .tag {
+      padding: 6px 16px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .featured-body {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured-body .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+
+    .featured-body h2 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .featured-body .excerpt {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+
+    .featured-body .meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .featured-body .meta .author {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .author-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* 文章列表 */
+    .articles-section {
+      padding: 48px 0;
+    }
+
+    .articles-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+    }
+
+    .article-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .article-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      gap: 20px;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .article-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary-lightest);
+      transform: translateX(4px);
+    }
+
+    .article-card-img {
+      width: 120px;
+      height: 100px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .article-card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .article-card-body .category-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .category-badge.tech { background: #DBEAFE; color: #1D4ED8; }
+    .category-badge.policy { background: #FEF3C7; color: #92400E; }
+    .category-badge.industry { background: #D8F3DC; color: #1B4332; }
+    .category-badge.academic { background: #F3E8FF; color: #6B21A8; }
+
+    .article-card-body h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .article-card-body .excerpt {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .article-card-body .meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    /* 侧栏 */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sidebar-card {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .sidebar-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 热门话题 */
+    .hot-topics {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hot-topic {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .hot-topic:hover {
+      background: var(--bg-light);
+    }
+
+    .hot-topic .rank {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      background: var(--bg-light);
+      color: var(--text-muted);
+    }
+
+    .hot-topic:nth-child(1) .rank { background: #FEE2E2; color: #991B1B; }
+    .hot-topic:nth-child(2) .rank { background: #FEF3C7; color: #92400E; }
+    .hot-topic:nth-child(3) .rank { background: #D8F3DC; color: #1B4332; }
+
+    .hot-topic .text {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .hot-topic .views {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 2px;
+    }
+
+    /* 论文推荐 */
+    .paper-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .paper-item {
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .paper-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .paper-item h5 {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .paper-item .meta {
+      font-size: 12px;
+      color: var(--text-light);
+      display: flex;
+      gap: 12px;
+    }
+
+    /* 标签云 */
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-cloud span {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--bg-light);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tag-cloud span:hover {
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+
+    /* 时间线 */
+    .timeline-section {
+      padding: 48px 0 80px;
+      background: var(--bg-cream);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--primary-lightest);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 32px;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      transition: var(--transition);
+    }
+
+    .timeline-item:hover {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -33px;
+      top: 28px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid white;
+      box-shadow: 0 0 0 2px var(--primary-lightest);
+    }
+
+    .timeline-item .date {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .timeline-item h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .timeline-item p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+      .featured-card { grid-template-columns: 1fr; }
+      .articles-layout { grid-template-columns: 1fr; }
+      .research-hero h1 { font-size: 30px; }
+      .article-card { flex-direction: column; }
+      .article-card-img { width: 100%; height: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">鉴</div>
+        <span>灵草鉴</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="identify.html">AI鉴定</a>
+        <a href="herb-database.html">药材百科</a>
+        <a href="research.html" class="active">研究资讯</a>
+        <a href="about.html">关于我们</a>
+        <a href="identify.html" class="nav-cta">开始鉴定</a>
+      </div>
+      <div class="nav-toggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="research-hero">
+    <div class="container">
+      <h1>研究资讯与学术前沿</h1>
+      <p>追踪AI中药鉴定领域最新研究成果、技术突破与行业动态</p>
+    </div>
+  </section>
+
+  <nav class="research-nav">
+    <div class="container">
+      <a href="#" class="active">全部</a>
+      <a href="#">技术前沿</a>
+      <a href="#">学术论文</a>
+      <a href="#">政策法规</a>
+      <a href="#">行业动态</a>
+      <a href="#">会议报告</a>
+    </div>
+  </nav>
+
+  <!-- 置顶文章 -->
+  <section class="featured-article">
+    <div class="container">
+      <div class="featured-card">
+        <div class="featured-img">
+          <div class="icon">🧬</div>
+          <div class="tag">封面文章</div>
+        </div>
+        <div class="featured-body">
+          <div class="category-badge">技术前沿</div>
+          <h2>多模态融合模型在中药材鉴定中的突破性进展</h2>
+          <p class="excerpt">研究团队提出了一种融合视觉、光谱、分子特征的多模态鉴定框架，在易混淆品种鉴定中取得99.2%的准确率。该方法首次将Vision Transformer与DNA条形码技术进行深度整合，为中药材精准鉴定开辟了全新路径。</p>
+          <div class="meta">
+            <div class="author">
+              <div class="author-avatar">张</div>
+              <span>张明远 教授</span>
+            </div>
+            <span>2026-04-28</span>
+            <span>阅读 8 分钟</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 文章列表 + 侧栏 -->
+  <section class="articles-section">
+    <div class="container">
+      <div class="articles-layout">
+        <div class="article-list">
+          <div class="article-card">
+            <div class="article-card-img" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">📜</div>
+            <div class="article-card-body">
+              <span class="category-badge policy">政策法规</span>
+              <h3>2025版《中国药典》正式实施，新增AI辅助鉴定方法指导原则</h3>
+              <p class="excerpt">国家药典委员会在2025版药典中首次纳入AI辅助鉴定方法的相关指导原则，明确了AI技术在中药材鉴别领域的应用规范与验证标准。</p>
+              <div class="meta">
+                <span>2026-04-25</span>
+                <span>阅读 6 分钟</span>
+                <span>1.2k 浏览</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article-card">
+            <div class="article-card-img" style="background:linear-gradient(135deg,#D8F3DC,#B7E4C7);">🏆</div>
+            <div class="article-card-body">
+              <span class="category-badge industry">行业动态</span>
+              <h3>灵草鉴平台荣获2026年度中医药科技创新一等奖</h3>
+              <p class="excerpt">在第十二届全国中医药科技创新大会上，灵草鉴AI中药鉴定平台凭借其创新性的多模态鉴定技术与显著的产业化成果，获得科技创新一等奖。</p>
+              <div class="meta">
+                <span>2026-04-20</span>
+                <span>阅读 4 分钟</span>
+                <span>3.5k 浏览</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article-card">
+            <div class="article-card-img" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE);">🤖</div>
+            <div class="article-card-body">
+              <span class="category-badge tech">技术前沿</span>
+              <h3>基于Transformer的中药材显微特征自动识别系统</h3>
+              <p class="excerpt">本研究构建了首个面向中药材显微图像的Transformer识别模型，在粉末显微鉴定中实现了95.7%的准确率，显著优于传统CNN架构。</p>
+              <div class="meta">
+                <span>2026-04-18</span>
+                <span>阅读 7 分钟</span>
+                <span>890 浏览</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article-card">
+            <div class="article-card-img" style="background:linear-gradient(135deg,#F3E8FF,#E9D5FF);">📊</div>
+            <div class="article-card-body">
+              <span class="category-badge academic">学术论文</span>
+              <h3>中药知识图谱构建及其在智能鉴定中的应用研究</h3>
+              <p class="excerpt">论文提出了一个包含800+药材实体、5000+性状特征、30000+配伍关系的大规模中药知识图谱，并基于图神经网络实现了关联推理与辅助鉴别。</p>
+              <div class="meta">
+                <span>2026-04-15</span>
+                <span>阅读 10 分钟</span>
+                <span>1.8k 浏览</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article-card">
+            <div class="article-card-img" style="background:linear-gradient(135deg,#FEE2E2,#FECACA);">🔬</div>
+            <div class="article-card-body">
+              <span class="category-badge tech">技术前沿</span>
+              <h3>近红外光谱结合深度学习的人参品质快速分级方法</h3>
+              <p class="excerpt">研究团队开发了基于近红外光谱和1D-CNN的人参品质分级系统，可在30秒内完成从检测到分级的全流程，准确率达到96.3%。</p>
+              <div class="meta">
+                <span>2026-04-12</span>
+                <span>阅读 6 分钟</span>
+                <span>670 浏览</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="article-card">
+            <div class="article-card-img" style="background:linear-gradient(135deg,#E0E7FF,#C7D2FE);">🏛️</div>
+            <div class="article-card-body">
+              <span class="category-badge policy">政策法规</span>
+              <h3>国家药监局发布中药材数字化鉴定技术指导原则（征求意见稿）</h3>
+              <p class="excerpt">为指导和规范中药材数字化鉴定技术的研发与应用，国家药监局组织起草了技术指导原则，面向社会公开征求意见。</p>
+              <div class="meta">
+                <span>2026-04-08</span>
+                <span>阅读 5 分钟</span>
+                <span>2.1k 浏览</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 侧栏 -->
+        <div class="sidebar">
+          <div class="sidebar-card">
+            <h4>🔥 热门话题</h4>
+            <div class="hot-topics">
+              <div class="hot-topic">
+                <span class="rank">1</span>
+                <div>
+                  <div class="text">多模态AI鉴定准确率突破99%</div>
+                  <div class="views">5.2k 讨论</div>
+                </div>
+              </div>
+              <div class="hot-topic">
+                <span class="rank">2</span>
+                <div>
+                  <div class="text">2025版药典AI鉴定新标准解读</div>
+                  <div class="views">3.8k 讨论</div>
+                </div>
+              </div>
+              <div class="hot-topic">
+                <span class="rank">3</span>
+                <div>
+                  <div class="text">中药材DNA条形码技术最新进展</div>
+                  <div class="views">2.9k 讨论</div>
+                </div>
+              </div>
+              <div class="hot-topic">
+                <span class="rank">4</span>
+                <div>
+                  <div class="text">中医药数字化转型路径探讨</div>
+                  <div class="views">1.6k 讨论</div>
+                </div>
+              </div>
+              <div class="hot-topic">
+                <span class="rank">5</span>
+                <div>
+                  <div class="text">易混淆药材AI鉴别挑战赛</div>
+                  <div class="views">1.2k 讨论</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4>📚 论文推荐</h4>
+            <div class="paper-list">
+              <div class="paper-item">
+                <h5>Attention-based Multi-Scale Feature Fusion for TCM Herb Identification</h5>
+                <div class="meta">
+                  <span>Nature Communications</span>
+                  <span>2026</span>
+                </div>
+              </div>
+              <div class="paper-item">
+                <h5>DNABar-Former: DNA Barcode Identification via Transformer Architecture</h5>
+                <div class="meta">
+                  <span>Bioinformatics</span>
+                  <span>2026</span>
+                </div>
+              </div>
+              <div class="paper-item">
+                <h5>Knowledge Graph Enhanced Herbal Medicine Authentication System</h5>
+                <div class="meta">
+                  <span>J. Ethnopharmacology</span>
+                  <span>2025</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h4>🏷️ 热门标签</h4>
+            <div class="tag-cloud">
+              <span>深度学习</span>
+              <span>计算机视觉</span>
+              <span>DNA条形码</span>
+              <span>知识图谱</span>
+              <span>近红外光谱</span>
+              <span>药典标准</span>
+              <span>品质评价</span>
+              <span>显微鉴定</span>
+              <span>伪品鉴别</span>
+              <span>数据增强</span>
+              <span>可解释AI</span>
+              <span>迁移学习</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 发展时间线 -->
+  <section class="timeline-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">发展历程</span>
+        <h2 class="section-title">AI中药鉴定里程碑</h2>
+        <p class="section-desc">记录AI技术在中药鉴定领域的关键突破与发展节点</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="date">2026年4月</div>
+          <h4>多模态融合鉴定准确率突破99%</h4>
+          <p>灵草鉴团队提出视觉-光谱-分子多模态融合框架，在易混淆品种鉴定中达到99.2%准确率，为行业树立新标杆。</p>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2025年12月</div>
+          <h4>2025版《中国药典》纳入AI鉴定指导原则</h4>
+          <p>国家药典委员会首次将AI辅助鉴定方法纳入药典指导原则，标志着AI鉴定技术获得官方认可与规范。</p>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2025年6月</div>
+          <h4>灵草鉴2.0平台正式上线</h4>
+          <p>新增DNA条形码辅助鉴定、知识图谱关联推理、可解释性分析三大核心功能，药材品种库扩展至800+。</p>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2024年9月</div>
+          <h4>中药材显微图像Transformer模型发布</h4>
+          <p>首个面向中药材粉末显微鉴定的Transformer模型发布，在6大药类200+品种中实现95.7%的准确率。</p>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2024年3月</div>
+          <h4>灵草鉴1.0平台上线</h4>
+          <p>基于ResNet-152的视觉鉴定引擎上线，覆盖500+常见药材，识别准确率达96.8%，平均鉴定时间1.2秒。</p>
+        </div>
+        <div class="timeline-item">
+          <div class="date">2023年6月</div>
+          <h4>大规模中药材图像数据集发布</h4>
+          <p>团队发布包含50万张标注图像的中药材多形态数据集，覆盖原植物、饮片、粉末三种形态，为领域研究奠定数据基础。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="logo-icon">鉴</div>
+            <span>灵草鉴</span>
+          </div>
+          <p>基于前沿AI技术的中药材智能鉴定平台，致力于推动中药行业数字化转型与品质保障，传承中医药文化精髓。</p>
+          <div class="footer-social">
+            <a href="#">微</a><a href="#">博</a><a href="#">知</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>产品服务</h4>
+          <ul>
+            <li><a href="identify.html">AI智能鉴定</a></li>
+            <li><a href="herb-database.html">药材百科</a></li>
+            <li><a href="#">批量鉴定</a></li>
+            <li><a href="#">API接口</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>学术资源</h4>
+          <ul>
+            <li><a href="research.html">研究论文</a></li>
+            <li><a href="#">数据集下载</a></li>
+            <li><a href="#">模型开源</a></li>
+            <li><a href="#">技术博客</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>关于我们</h4>
+          <ul>
+            <li><a href="about.html">团队介绍</a></li>
+            <li><a href="#">合作伙伴</a></li>
+            <li><a href="#">联系方式</a></li>
+            <li><a href="#">加入我们</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>2026 灵草鉴 AI中药鉴定平台 · 传承与创新</span>
+        <span>京ICP备2026XXXXXX号</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
