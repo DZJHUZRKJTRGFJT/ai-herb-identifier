@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>药材百科 - 灵草鉴</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .db-hero {
+      padding-top: calc(var(--nav-height) + 48px);
+      padding-bottom: 48px;
+      background: linear-gradient(165deg, #FDF8F0 0%, #FFFFFF 60%, #F0F7F4 100%);
+      text-align: center;
+    }
+
+    .db-hero h1 {
+      font-family: var(--font-serif);
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .db-hero p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* 搜索与筛选 */
+    .db-filter {
+      padding: 32px 0 0;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 20px 12px 44px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      background: white;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.1);
+    }
+
+    .search-box .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--text-light);
+    }
+
+    .filter-select {
+      padding: 12px 20px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+      min-width: 140px;
+      transition: var(--transition);
+      color: var(--text-secondary);
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%237A7A8A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .filter-select:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    /* 分类标签 */
+    .category-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .category-tag {
+      padding: 8px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 500;
+      background: white;
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .category-tag:hover,
+    .category-tag.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* 统计条 */
+    .db-stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .db-stats-bar .count {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .view-toggle button {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 1px solid var(--border-light);
+      background: white;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .view-toggle button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* 药材网格 */
+    .herb-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding-bottom: 80px;
+    }
+
+    .herb-item {
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .herb-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+      border-color: var(--primary-lightest);
+    }
+
+    .herb-item-img {
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      background: #f5f5f0;
+    }
+
+    .herb-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .herb-item:hover .herb-item-img img {
+      transform: scale(1.1);
+    }
+
+    .herb-item-img .emoji {
+      font-size: 56px;
+      transition: var(--transition);
+    }
+
+    .herb-item:hover .emoji {
+      transform: scale(1.12);
+    }
+
+    .herb-item-img .fav-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      opacity: 0;
+    }
+
+    .herb-item:hover .fav-btn {
+      opacity: 1;
+    }
+
+    .herb-item-body {
+      padding: 16px 20px 20px;
+    }
+
+    .herb-item-body h3 {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .herb-item-body .latin {
+      font-size: 11px;
+      color: var(--text-light);
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .herb-item-body .tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .herb-item-body .brief {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* 列表视图 */
+    .herb-grid.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    .herb-grid.list-view .herb-item {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .herb-grid.list-view .herb-item-img {
+      width: 180px;
+      height: auto;
+      min-height: 140px;
+      flex-shrink: 0;
+    }
+
+    .herb-grid.list-view .herb-item-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .herb-grid.list-view .herb-item-body .brief {
+      -webkit-line-clamp: 3;
+    }
+
+    /* 药材详情弹窗 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-xl);
+      max-width: 720px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .modal-header {
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .modal-header h2 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--bg-light);
+    }
+
+    .modal-close:hover {
+      background: var(--border-light);
+    }
+
+    .modal-body {
+      padding: 28px 32px;
+    }
+
+    .detail-top {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .detail-img {
+      width: 200px;
+      height: 200px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      flex-shrink: 0;
+    }
+
+    .detail-info {
+      flex: 1;
+    }
+
+    .detail-info .latin {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+
+    .detail-info .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .detail-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .detail-meta-item {
+      font-size: 13px;
+    }
+
+    .detail-meta-item .label {
+      color: var(--text-muted);
+    }
+
+    .detail-meta-item .value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .detail-section {
+      margin-bottom: 24px;
+    }
+
+    .detail-section h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-dark);
+    }
+
+    .detail-section p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+    }
+
+    .detail-section ul {
+      list-style: none;
+    }
+
+    .detail-section ul li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .detail-section ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 4px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+
+    .modal-actions {
+      padding: 20px 32px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 1024px) {
+      .herb-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .herb-grid { grid-template-columns: repeat(2, 1fr); }
+      .db-hero h1 { font-size: 30px; }
+      .filter-bar { flex-direction: column; }
+      .detail-top { flex-direction: column; }
+      .detail-img { width: 100%; height: 160px; }
+      .detail-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">鉴</div>
+        <span>灵草鉴</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="identify.html">AI鉴定</a>
+        <a href="herb-database.html" class="active">药材百科</a>
+        <a href="research.html">研究资讯</a>
+        <a href="about.html">关于我们</a>
+        <a href="identify.html" class="nav-cta">开始鉴定</a>
+      </div>
+      <div class="nav-toggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="db-hero">
+    <div class="container">
+      <h1>中药材百科数据库</h1>
+      <p>收录800+种中药材的详细信息，涵盖药性、功效、鉴别要点、配伍禁忌等全方位知识</p>
+    </div>
+  </section>
+
+  <section class="db-filter">
+    <div class="container">
+      <div class="filter-bar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="搜索药材名称、功效、拉丁学名..." id="searchInput" oninput="filterHerbs()">
+        </div>
+        <select class="filter-select" id="categoryFilter" onchange="filterHerbs()">
+          <option value="">全部分类</option>
+          <option value="解表药">解表药</option>
+          <option value="清热药">清热药</option>
+          <option value="泻下药">泻下药</option>
+          <option value="祛风湿药">祛风湿药</option>
+          <option value="化湿药">化湿药</option>
+          <option value="利水渗湿药">利水渗湿药</option>
+          <option value="温里药">温里药</option>
+          <option value="理气药">理气药</option>
+          <option value="消食药">消食药</option>
+          <option value="止血药">止血药</option>
+          <option value="活血化瘀药">活血化瘀药</option>
+          <option value="化痰止咳药">化痰止咳药</option>
+          <option value="安神药">安神药</option>
+          <option value="补虚药">补虚药</option>
+        </select>
+        <select class="filter-select" id="natureFilter" onchange="filterHerbs()">
+          <option value="">药性筛选</option>
+          <option value="寒">寒</option>
+          <option value="凉">凉</option>
+          <option value="平">平</option>
+          <option value="温">温</option>
+          <option value="热">热</option>
+        </select>
+      </div>
+
+      <div class="category-tags">
+        <span class="category-tag active" onclick="selectCategory(this, '')">全部</span>
+        <span class="category-tag" onclick="selectCategory(this, '解表药')">解表药</span>
+        <span class="category-tag" onclick="selectCategory(this, '清热药')">清热药</span>
+        <span class="category-tag" onclick="selectCategory(this, '补虚药')">补虚药</span>
+        <span class="category-tag" onclick="selectCategory(this, '活血化瘀药')">活血化瘀药</span>
+        <span class="category-tag" onclick="selectCategory(this, '祛风湿药')">祛风湿药</span>
+        <span class="category-tag" onclick="selectCategory(this, '温里药')">温里药</span>
+        <span class="category-tag" onclick="selectCategory(this, '理气药')">理气药</span>
+        <span class="category-tag" onclick="selectCategory(this, '化痰止咳药')">化痰止咳药</span>
+        <span class="category-tag" onclick="selectCategory(this, '利水渗湿药')">利水渗湿药</span>
+        <span class="category-tag" onclick="selectCategory(this, '止血药')">止血药</span>
+        <span class="category-tag" onclick="selectCategory(this, '安神药')">安神药</span>
+      </div>
+
+      <div class="db-stats-bar">
+        <span>共 <span class="count" id="herbCount">16</span> 种药材</span>
+        <div class="view-toggle">
+          <button class="active" onclick="setView('grid', this)" title="网格视图">▦</button>
+          <button onclick="setView('list', this)" title="列表视图">☰</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom:80px;">
+    <div class="container">
+      <div class="herb-grid" id="herbGrid"></div>
+    </div>
+  </section>
+
+  <!-- 详情弹窗 -->
+  <div class="modal-overlay" id="herbModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">人参</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-actions">
+        <a href="identify.html" class="btn btn-primary">AI鉴定此药材</a>
+        <button class="btn btn-outline" onclick="showToast('已添加到收藏')">收藏药材</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="logo-icon">鉴</div>
+            <span>灵草鉴</span>
+          </div>
+          <p>基于前沿AI技术的中药材智能鉴定平台，致力于推动中药行业数字化转型与品质保障，传承中医药文化精髓。</p>
+          <div class="footer-social">
+            <a href="#">微</a><a href="#">博</a><a href="#">知</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>产品服务</h4>
+          <ul>
+            <li><a href="identify.html">AI智能鉴定</a></li>
+            <li><a href="herb-database.html">药材百科</a></li>
+            <li><a href="#">批量鉴定</a></li>
+            <li><a href="#">API接口</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>学术资源</h4>
+          <ul>
+            <li><a href="research.html">研究论文</a></li>
+            <li><a href="#">数据集下载</a></li>
+            <li><a href="#">模型开源</a></li>
+            <li><a href="#">技术博客</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>关于我们</h4>
+          <ul>
+            <li><a href="about.html">团队介绍</a></li>
+            <li><a href="#">合作伙伴</a></li>
+            <li><a href="#">联系方式</a></li>
+            <li><a href="#">加入我们</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>2026 灵草鉴 AI中药鉴定平台 · 传承与创新</span>
+        <span>京ICP备2026XXXXXX号</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    const herbsData = [
+      {
+        name: '人参', latin: 'Panax ginseng C.A.Mey.', emoji: '🌿',
+        image: 'images/ginseng.png',
+        category: '补虚药', nature: '温', flavor: '甘、微苦', meridian: '脾、肺、心、肾经',
+        origin: '吉林、辽宁、黑龙江', part: '根及根茎',
+        bg: 'linear-gradient(135deg,#FEE2E2,#FECACA)',
+        tags: ['温', '甘', '珍稀'],
+        brief: '大补元气，复脉固脱，补脾益肺，生津养血，安神益智。',
+        efficacy: '大补元气，复脉固脱，补脾益肺，生津养血，安神益智。用于体虚欲脱，肢冷脉微，脾虚食少，肺虚喘咳，津伤口渴，内热消渴，气血亏虚，久病虚羸，惊悸失眠，阳痿宫冷。',
+        identification: '主根呈纺锤形或圆柱形，表面灰黄色，有疏浅断续的粗横纹及明显的纵皱。根茎（芦头）多拘挛而弯曲，具不定根（艼）和稀疏的凹窝状茎痕（芦碗）。质较硬，断面淡黄白色，显粉性，形成层环纹棕黄色，皮部有黄棕色的点状树脂道及放射状裂隙。',
+        contraindication: '不宜与藜芦、五灵脂同用。实证、热证而正气不虚者忌服。',
+        dosage: '3-9g，另煎兑服；挽救虚脱可用15-30g。'
+      },
+      {
+        name: '黄芪', latin: 'Astragalus membranaceus', emoji: '🍃',
+        image: 'images/huangqi.png',
+        category: '补虚药', nature: '温', flavor: '甘', meridian: '脾、肺经',
+        origin: '甘肃、内蒙古、山西', part: '根',
+        bg: 'linear-gradient(135deg,#D8F3DC,#B7E4C7)',
+        tags: ['温', '甘'],
+        brief: '补气升阳，固表止汗，利水消肿，生津养血，托毒排脓。',
+        efficacy: '补气升阳，固表止汗，利水消肿，生津养血，行滞通痹，托毒排脓，敛疮生肌。用于气虚乏力，食少便溏，中气下陷，久泻脱肛，便血崩漏，表虚自汗，气虚水肿。',
+        identification: '呈圆柱形，有的有分枝，上端较粗。表面淡棕黄色或淡棕褐色，有不整齐的纵皱纹或纵沟。质硬而韧，不易折断，断面纤维性强，并显粉性，皮部黄白色，木部淡黄色，有菊花心。',
+        contraindication: '凡表实邪盛、内有积滞、阴虚阳亢、疮疡初起或溃后热毒尚盛者，均不宜用。',
+        dosage: '9-30g。'
+      },
+      {
+        name: '当归', latin: 'Angelica sinensis (Oliv.) Diels', emoji: '🌸',
+        image: 'images/danggui.png',
+        category: '补虚药', nature: '温', flavor: '甘、辛', meridian: '肝、心、脾经',
+        origin: '甘肃、云南、四川', part: '根',
+        bg: 'linear-gradient(135deg,#DBEAFE,#BFDBFE)',
+        tags: ['温', '甘辛'],
+        brief: '补血活血，调经止痛，润肠通便。为补血之圣药。',
+        efficacy: '补血活血，调经止痛，润肠通便。用于血虚萎黄，眩晕心悸，月经不调，经闭痛经，虚寒腹痛，风湿痹痛，跌扑损伤，痈疽疮疡，肠燥便秘。',
+        identification: '略呈圆柱形，下部有支根3-5条或更多。表面黄棕色至棕褐色，具纵皱纹及横长皮孔样突起。根头（归头）具环纹，上端圆钝，或具数个明显突出的根茎痕。质柔韧，断面黄白色或淡黄棕色，皮部厚，有裂隙及多数棕色点状分泌腔。',
+        contraindication: '湿盛中满、大便泄泻者忌服。',
+        dosage: '6-12g。'
+      },
+      {
+        name: '金银花', latin: 'Lonicera japonica Thunb.', emoji: '🌼',
+        image: 'images/jinyinhua.png',
+        category: '清热药', nature: '寒', flavor: '甘', meridian: '肺、心、胃经',
+        origin: '山东、河南、河北', part: '花蕾或带初开的花',
+        bg: 'linear-gradient(135deg,#FEF3C7,#FDE68A)',
+        tags: ['寒', '甘'],
+        brief: '清热解毒，疏散风热。为清热解毒之要药。',
+        efficacy: '清热解毒，疏散风热。用于痈肿疔疮，喉痹，丹毒，热毒血痢，风热感冒，温病发热。',
+        identification: '呈棒状，上粗下细，略弯曲。表面黄白色或绿白色，密被短柔毛。花萼绿色，先端5裂，裂片有毛。开放者花冠筒状，先端二唇形。气清香，味淡、微苦。',
+        contraindication: '脾胃虚寒及气虚疮疡脓清者忌服。',
+        dosage: '6-15g。'
+      },
+      {
+        name: '枸杞子', latin: 'Lycium barbarum L.', emoji: '🔴',
+        image: 'images/gouqi.png',
+        category: '补虚药', nature: '平', flavor: '甘', meridian: '肝、肾经',
+        origin: '宁夏、甘肃、青海', part: '成熟果实',
+        bg: 'linear-gradient(135deg,#FEE2E2,#FECDD2)',
+        tags: ['平', '甘'],
+        brief: '滋补肝肾，益精明目。为滋补肝肾之要药。',
+        efficacy: '滋补肝肾，益精明目。用于虚劳精亏，腰膝酸痛，眩晕耳鸣，阳萎遗精，内热消渴，血虚萎黄，目昏不明。',
+        identification: '呈类纺锤形或椭圆形，表面红色或暗红色，顶端有小突起状的花柱痕。果皮柔韧，皱缩；果肉肉质，柔润。种子类肾形，扁而翘。气微，味甜。',
+        contraindication: '外邪实热、脾虚有湿及泄泻者忌服。',
+        dosage: '6-12g。'
+      },
+      {
+        name: '川芎', latin: 'Ligusticum chuanxiong Hort.', emoji: '🪵',
+        image: 'images/chuanxiong.png',
+        category: '活血化瘀药', nature: '温', flavor: '辛', meridian: '肝、胆、心包经',
+        origin: '四川、贵州、云南', part: '根茎',
+        bg: 'linear-gradient(135deg,#F3E8FF,#E9D5FF)',
+        tags: ['温', '辛'],
+        brief: '活血行气，祛风止痛。为血中之气药。',
+        efficacy: '活血行气，祛风止痛。用于胸痹心痛，胸胁刺痛，跌扑肿痛，月经不调，经闭痛经，癥瘕腹痛，头痛，风湿痹痛。',
+        identification: '为不规则结节状拳形团块。表面黄褐色，粗糙皱缩，有多数平行隆起的轮节。顶端有凹陷的类圆形茎痕，下侧及轮节上有多数小瘤状根痕。质坚实，不易折断，断面黄白色或灰黄色，散有黄棕色的油室，形成层环呈波状。',
+        contraindication: '阴虚火旺、多汗及月经过多者慎用。',
+        dosage: '3-10g。'
+      },
+      {
+        name: '茯苓', latin: 'Poria cocos (Schw.) Wolf', emoji: '⚪',
+        image: 'images/fuling.png',
+        category: '利水渗湿药', nature: '平', flavor: '甘、淡', meridian: '心、肺、脾、肾经',
+        origin: '安徽、云南、湖北', part: '菌核',
+        bg: 'linear-gradient(135deg,#F1EFE8,#E8E6DF)',
+        tags: ['平', '甘淡'],
+        brief: '利水渗湿，健脾，宁心。为利水渗湿之要药。',
+        efficacy: '利水渗湿，健脾，宁心。用于水肿尿少，痰饮眩悸，脾虚食少，便溏泄泻，心神不安，惊悸失眠。',
+        identification: '呈类球形、椭圆形或为不规则块状。外皮薄而粗糙，棕褐色至黑褐色，有明显的皱缩纹理。体重，质坚实，断面颗粒性，外层淡棕色，内部白色，少数淡红色，有的中间抱有松根。',
+        contraindication: '阴虚而无湿热、虚寒精滑、气虚下陷者慎服。',
+        dosage: '10-15g。'
+      },
+      {
+        name: '丹参', latin: 'Salvia miltiorrhiza Bge.', emoji: '💜',
+        image: 'images/danshen.png',
+        category: '活血化瘀药', nature: '微寒', flavor: '苦', meridian: '心、肝经',
+        origin: '四川、山东、河南', part: '根及根茎',
+        bg: 'linear-gradient(135deg,#FCE7F3,#FBCFE8)',
+        tags: ['微寒', '苦'],
+        brief: '活血祛瘀，通经止痛，清心除烦，凉血消痈。',
+        efficacy: '活血祛瘀，通经止痛，清心除烦，凉血消痈。用于胸痹心痛，脘腹胁痛，癥瘕积聚，热痹疼痛，心烦不眠，月经不调，痛经经闭，疮疡肿痛。',
+        identification: '根茎短粗，顶端有时残留茎基。根数条，长圆柱形，略弯曲。表面棕红色或暗棕红色，粗糙，具纵皱纹。老根外皮疏松，常呈鳞片状剥落。质硬而脆，断面疏松，有裂隙或略平整而致密，皮部棕红色，木部灰黄色或紫褐色。',
+        contraindication: '不宜与藜芦同用。孕妇慎用。',
+        dosage: '10-15g。'
+      },
+      {
+        name: '麻黄', latin: 'Ephedra sinica Stapf', emoji: '🌾',
+        image: 'images/mahuang.png',
+        category: '解表药', nature: '温', flavor: '辛、微苦', meridian: '肺、膀胱经',
+        origin: '内蒙古、山西、河北', part: '草质茎',
+        bg: 'linear-gradient(135deg,#ECFDF5,#A7F3D0)',
+        tags: ['温', '辛'],
+        brief: '发汗散寒，宣肺平喘，利水消肿。为发汗解表第一药。',
+        efficacy: '发汗散寒，宣肺平喘，利水消肿。用于风寒感冒，胸闷喘咳，风水浮肿。',
+        identification: '呈细长圆柱形，少分枝。表面淡绿色至黄绿色，有细纵脊线，触之微有粗糙感。节明显，节间长2-6cm。节上有膜质鳞叶，裂片2，稀3，先端灰白色，锐三角形。体轻，质脆，易折断，断面略呈纤维性，周边绿黄色，髓部红棕色。',
+        contraindication: '体虚自汗、阴虚盗汗及喘咳由于肾不纳气者忌服。高血压患者慎用。',
+        dosage: '2-10g。'
+      },
+      {
+        name: '黄连', latin: 'Coptis chinensis Franch.', emoji: '💛',
+        image: 'images/huanglian.png',
+        category: '清热药', nature: '寒', flavor: '苦', meridian: '心、脾、胃、肝、胆、大肠经',
+        origin: '四川、湖北、云南', part: '根茎',
+        bg: 'linear-gradient(135deg,#FEF9C3,#FDE68A)',
+        tags: ['寒', '苦'],
+        brief: '清热燥湿，泻火解毒。为清热燥湿之要药。',
+        efficacy: '清热燥湿，泻火解毒。用于湿热痞满，呕吐吞酸，泻痢，黄疸，高热神昏，心火亢盛，心烦不寐，心悸不宁，血热吐衄，目赤，牙痛，消渴，痈肿疔疮。',
+        identification: '多集聚成簇，形如鸡爪。表面灰黄色或黄褐色，粗糙，有不规则结节状隆起。有的节间表面光滑如茎杆。上面残留褐色鳞叶。质硬，断面不整齐，皮部橙红色或暗棕色，木部鲜黄色或橙黄色，呈放射状排列。',
+        contraindication: '脾胃虚寒者忌用；阴虚津伤者慎用。',
+        dosage: '2-5g。'
+      },
+      {
+        name: '半夏', latin: 'Pinellia ternata (Thunb.) Breit.', emoji: '🟤',
+        image: 'images/banxia.png',
+        category: '化痰止咳药', nature: '温', flavor: '辛', meridian: '脾、胃、肺经',
+        origin: '四川、湖北、河南', part: '块茎',
+        bg: 'linear-gradient(135deg,#FDF2F8,#FCE7F3)',
+        tags: ['温', '辛', '有毒'],
+        brief: '燥湿化痰，降逆止呕，消痞散结。为化痰要药。',
+        efficacy: '燥湿化痰，降逆止呕，消痞散结。用于湿痰寒痰，咳喘痰多，痰饮眩悸，风痰眩晕，痰厥头痛，呕吐反胃，胸脘痞闷，梅核气。',
+        identification: '呈类球形，有的稍偏斜。表面白色或浅黄色，顶端有凹陷的茎痕，周围密布麻点状根痕；下面钝圆，较光滑。质坚实，断面洁白，富粉性。',
+        contraindication: '不宜与川乌、制川乌、草乌、制草乌、附子同用。生品内服宜慎。',
+        dosage: '3-9g。'
+      },
+      {
+        name: '酸枣仁', latin: 'Ziziphus jujuba Mill. var. spinosa', emoji: '🫐',
+        image: 'images/suanzaoren.png',
+        category: '安神药', nature: '平', flavor: '甘、酸', meridian: '肝、胆、心经',
+        origin: '河北、陕西、辽宁', part: '成熟种子',
+        bg: 'linear-gradient(135deg,#E0E7FF,#C7D2FE)',
+        tags: ['平', '甘酸'],
+        brief: '养心补肝，宁心安神，敛汗，生津。为养心安神要药。',
+        efficacy: '养心补肝，宁心安神，敛汗，生津。用于虚烦不眠，惊悸多梦，体虚多汗，津伤口渴。',
+        identification: '呈扁圆形或扁椭圆形。表面紫红色或紫褐色，平滑有光泽，有的有裂纹。一面较平坦，中间有1条隆起的纵线纹；另一面稍凸起。一端凹陷，可见线形种脐；另端有细小凸起的合点。种皮较脆，胚乳白色，子叶2，浅黄色，富油性。',
+        contraindication: '内有实邪郁火者慎服。',
+        dosage: '10-15g。'
+      },
+      {
+        name: '甘草', latin: 'Glycyrrhiza uralensis Fisch.', emoji: '🟤',
+        image: 'images/gancao.png',
+        category: '补虚药', nature: '平', flavor: '甘', meridian: '心、肺、脾、胃经',
+        origin: '内蒙古、甘肃、黑龙江', part: '根及根茎',
+        bg: 'linear-gradient(135deg,#FEF3C7,#FDE68A)',
+        tags: ['平', '甘'],
+        brief: '补脾益气，清热解毒，祛痰止咳，缓急止痛，调和诸药。',
+        efficacy: '补脾益气，清热解毒，祛痰止咳，缓急止痛，调和诸药。用于脾胃虚弱，倦怠乏力，心悸气短，咳嗽痰多，脘腹、四肢挛急疼痛，痈肿疮毒，缓解药物毒性、烈性。',
+        identification: '呈圆柱形，表面红棕色或灰棕色，具显著的纵皱纹、沟纹及皮孔。质坚实，断面略显纤维性，黄白色，粉性，形成层环明显，射线放射状，有的有裂隙。根茎表面有芽痕，断面中心有髓。',
+        contraindication: '不宜与海藻、京大戟、红大戟、芫花、甘遂同用。湿盛中满、恶心呕吐者忌服。',
+        dosage: '2-10g。'
+      },
+      {
+        name: '白术', latin: 'Atractylodes macrocephala Koidz.', emoji: '🟫',
+        image: 'images/baizhu.png',
+        category: '补虚药', nature: '温', flavor: '苦、甘', meridian: '脾、胃经',
+        origin: '浙江、安徽、湖南', part: '根茎',
+        bg: 'linear-gradient(135deg,#F5F0E8,#E8E2D5)',
+        tags: ['温', '苦甘'],
+        brief: '健脾益气，燥湿利水，止汗，安胎。',
+        efficacy: '健脾益气，燥湿利水，止汗，安胎。用于脾虚食少，腹胀泄泻，痰饮眩悸，水肿，自汗，胎动不安。',
+        identification: '呈不规则的肥厚团块。表面灰黄色或灰棕色，有瘤状突起、纵皱及沟纹。质坚实，断面黄白色至淡棕色，有棕黄色的点状油室散在，烘干者断面角质样，色较深或有裂隙。',
+        contraindication: '阴虚燥渴、气滞胀闷者忌服。',
+        dosage: '6-12g。'
+      },
+      {
+        name: '菊花', latin: 'Chrysanthemum morifolium Ramat.', emoji: '🌼',
+        image: 'images/juhua.png',
+        category: '清热药', nature: '微寒', flavor: '甘、苦', meridian: '肺、肝经',
+        origin: '浙江、安徽、河南', part: '头状花序',
+        bg: 'linear-gradient(135deg,#FEF9C3,#FDE68A)',
+        tags: ['微寒', '甘苦'],
+        brief: '疏散风热，平肝明目，清热解毒。',
+        efficacy: '疏散风热，平肝明目，清热解毒。用于风热感冒，头痛眩晕，目赤肿痛，眼目昏花，疮痈肿毒。',
+        identification: '呈类球形。总苞碟状，总苞片3-4层，卵形或椭圆形，草质，黄褐色或褐绿色。舌状花数轮，类白色或黄色，管状花多数，黄色。体轻，质柔润，气清香，味甘、微苦。',
+        contraindication: '气虚胃寒、食少泄泻者慎用。',
+        dosage: '5-10g。'
+      },
+      {
+        name: '三七', latin: 'Panax notoginseng (Burk.) F.H.Chen', emoji: '🌿',
+        image: 'images/sanqi.png',
+        category: '止血药', nature: '温', flavor: '甘、微苦', meridian: '肝、胃经',
+        origin: '云南、广西、四川', part: '根及根茎',
+        bg: 'linear-gradient(135deg,#E8E6DF,#D8D5C8)',
+        tags: ['温', '甘苦', '珍稀'],
+        brief: '散瘀止血，消肿定痛。为止血化瘀之要药。',
+        efficacy: '散瘀止血，消肿定痛。用于咯血，吐血，衄血，便血，崩漏，外伤出血，胸腹刺痛，跌扑肿痛。',
+        identification: '主根呈类圆锥形或圆柱形。表面灰褐色或灰棕色，有断续的纵皱纹及支根痕。顶端有茎痕，周围有瘤状突起。体重，质坚实，断面灰绿色、灰棕色或灰黑色，木质部微呈放射状排列。气微，味苦回甜。',
+        contraindication: '孕妇慎用。',
+        dosage: '3-9g；研粉吞服，一次1-3g。外用适量。'
+      }
+    ];
+
+    function renderHerbs(data) {
+      const grid = document.getElementById('herbGrid');
+      document.getElementById('herbCount').textContent = data.length;
+      
+      if (data.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 20px;"><div style="font-size:48px;margin-bottom:16px;">🔍</div><h3 style="font-size:18px;margin-bottom:8px;">未找到匹配的药材</h3><p style="font-size:14px;color:var(--text-muted);">请尝试调整搜索条件或筛选分类</p></div>';
+        return;
+      }
+
+      grid.innerHTML = data.map((herb, i) => `
+        <div class="herb-item" onclick="openModal(${i})" data-index="${i}">
+          <div class="herb-item-img" ${herb.image ? '' : `style="background:${herb.bg};display:flex;align-items:center;justify-content:center;"`}>
+            ${herb.image 
+              ? `<img src="${herb.image}" alt="${herb.name}" onerror="this.style.display='none';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.style.background='${herb.bg}';this.parentElement.innerHTML='<span class=emoji>${herb.emoji}</span>'">` 
+              : `<span class="emoji">${herb.emoji}</span>`}
+            <div class="fav-btn" onclick="event.stopPropagation();showToast('已收藏${herb.name}')">♥</div>
+          </div>
+          <div class="herb-item-body">
+            <h3>${herb.name}</h3>
+            <div class="latin">${herb.latin}</div>
+            <div class="tags">
+              ${herb.tags.map(t => {
+                const cls = t === '寒' || t === '凉' ? 'cool' : t === '温' || t === '热' ? 'warm' : t === '有毒' ? 'toxic' : 'neutral';
+                return `<span class="herb-tag ${cls}">${t}</span>`;
+              }).join('')}
+              <span class="badge badge-green" style="font-size:11px;padding:2px 8px;">${herb.category}</span>
+            </div>
+            <div class="brief">${herb.brief}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    let filteredData = [...herbsData];
+
+    function filterHerbs() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const category = document.getElementById('categoryFilter').value;
+      const nature = document.getElementById('natureFilter').value;
+
+      filteredData = herbsData.filter(h => {
+        const matchSearch = !search || h.name.includes(search) || h.latin.toLowerCase().includes(search) || h.brief.includes(search) || h.efficacy.includes(search);
+        const matchCategory = !category || h.category === category;
+        const matchNature = !nature || h.nature.includes(nature);
+        return matchSearch && matchCategory && matchNature;
+      });
+
+      renderHerbs(filteredData);
+    }
+
+    function selectCategory(el, category) {
+      document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('categoryFilter').value = category;
+      filterHerbs();
+    }
+
+    function setView(mode, btn) {
+      const grid = document.getElementById('herbGrid');
+      document.querySelectorAll('.view-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      grid.classList.toggle('list-view', mode === 'list');
+    }
+
+    function openModal(index) {
+      const herb = filteredData[index];
+      const realIndex = herbsData.indexOf(herb);
+      const h = herbsData[realIndex];
+      
+      document.getElementById('modalTitle').textContent = h.name;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="detail-top">
+          <div class="detail-img" ${h.image ? '' : `style="background:${h.bg};display:flex;align-items:center;justify-content:center;font-size:80px;"`}>
+            ${h.image 
+              ? `<img src="${h.image}" alt="${h.name}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-lg);" onerror="this.style.display='none';this.parentElement.style.background='${h.bg}';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.innerHTML='${h.emoji}'">` 
+              : h.emoji}
+          </div>
+          <div class="detail-info">
+            <div class="latin">${h.latin}</div>
+            <div class="tags">
+              ${h.tags.map(t => {
+                const cls = t === '寒' || t === '凉' ? 'cool' : t === '温' || t === '热' ? 'warm' : t === '有毒' ? 'toxic' : 'neutral';
+                return `<span class="herb-tag ${cls}">${t}</span>`;
+              }).join('')}
+              <span class="badge badge-green">${h.category}</span>
+            </div>
+            <div class="detail-meta">
+              <div class="detail-meta-item"><span class="label">药性：</span><span class="value">${h.nature}</span></div>
+              <div class="detail-meta-item"><span class="label">药味：</span><span class="value">${h.flavor}</span></div>
+              <div class="detail-meta-item"><span class="label">归经：</span><span class="value">${h.meridian}</span></div>
+              <div class="detail-meta-item"><span class="label">产地：</span><span class="value">${h.origin}</span></div>
+              <div class="detail-meta-item"><span class="label">药用部位：</span><span class="value">${h.part}</span></div>
+              <div class="detail-meta-item"><span class="label">用量：</span><span class="value">${h.dosage}</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <h4>📖 功效主治</h4>
+          <p>${h.efficacy}</p>
+        </div>
+        <div class="detail-section">
+          <h4>🔬 性状鉴别</h4>
+          <p>${h.identification}</p>
+        </div>
+        <div class="detail-section">
+          <h4>⚠️ 使用注意</h4>
+          <p>${h.contraindication}</p>
+        </div>
+      `;
+      
+      document.getElementById('herbModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('herbModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('herbModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // 初始渲染
+    renderHerbs(herbsData);
+  </script>
+</body>
+</html>
