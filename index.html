@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>灵草鉴 - AI智能中药鉴定平台</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ====== 首页 Hero ====== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(165deg, #F0F7F4 0%, #FFFFFF 40%, #FDF8F0 100%);
+      padding-top: var(--nav-height);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(45,106,79,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(212,163,115,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero-container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content { animation: fadeInUp 0.8s ease; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--primary-bg);
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, var(--primary), var(--primary-lighter));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 17px;
+      line-height: 1.9;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      max-width: 520px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+    }
+
+    .hero-stat {
+      text-align: left;
+    }
+
+    .hero-stat .number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: var(--font-serif);
+    }
+
+    .hero-stat .label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Hero 右侧视觉 */
+    .hero-visual {
+      position: relative;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-card-main {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border-light);
+      position: relative;
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .hero-card-header .icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .hero-card-header .title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .hero-card-header .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-card-img {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary-bg), var(--primary-lightest));
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-img::before {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: 2px dashed var(--primary-lighter);
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .hero-card-img .upload-icon {
+      font-size: 48px;
+      color: var(--primary-lighter);
+    }
+
+    .hero-result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .hero-result-tag {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .confidence-bar {
+      background: var(--bg-light);
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-lighter));
+      border-radius: 8px;
+      transition: width 1.5s ease;
+    }
+
+    .hero-float-card {
+      position: absolute;
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-light);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .hero-float-card.card-1 {
+      top: -20px;
+      right: -30px;
+      animation-delay: 0s;
+    }
+
+    .hero-float-card.card-2 {
+      bottom: 40px;
+      left: -40px;
+      animation-delay: 2s;
+    }
+
+    .float-stat {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .float-stat .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .float-stat .value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .float-stat .desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ====== 特色功能 ====== */
+    .features {
+      background: var(--bg-white);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 36px 28px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      background: white;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-lighter));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: left;
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    /* ====== AI技术展示 ====== */
+    .tech-showcase {
+      background: var(--primary-darker);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tech-showcase::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .tech-showcase .section-tag {
+      background: rgba(255,255,255,0.15);
+      color: var(--primary-lightest);
+    }
+
+    .tech-showcase .section-title {
+      color: white;
+    }
+
+    .tech-showcase .section-desc {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tech-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: var(--transition);
+    }
+
+    .tech-card:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+
+    .tech-card .tech-step {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary-lighter);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .tech-card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .tech-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.8;
+    }
+
+    .tech-card .tech-metrics {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .tech-metric .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-lighter);
+    }
+
+    .tech-metric .label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 2px;
+    }
+
+    /* ====== 药材展示 ====== */
+    .herbs-showcase {
+      background: var(--bg-cream);
+    }
+
+    .herbs-scroll {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .herb-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: var(--transition);
+    }
+
+    .herb-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-6px);
+    }
+
+    .herb-card-img {
+      height: 180px;
+      position: relative;
+      overflow: hidden;
+      background: #f5f5f0;
+    }
+
+    .herb-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .herb-card:hover .herb-card-img img {
+      transform: scale(1.08);
+    }
+
+    .herb-card-img .herb-emoji {
+      font-size: 64px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+      transition: var(--transition);
+    }
+
+    .herb-card:hover .herb-emoji {
+      transform: scale(1.15);
+    }
+
+    .herb-card-body {
+      padding: 20px;
+    }
+
+    .herb-card-body h3 {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .herb-card-body .latin-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .herb-card-body .herb-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .herb-card-body .brief {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ====== 数据统计 ====== */
+    .stats-section {
+      background: var(--bg-white);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 40px 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      background: white;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary-lightest);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* ====== 工作流程 ====== */
+    .workflow {
+      background: var(--bg-green-light);
+    }
+
+    .workflow-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .workflow-step {
+      text-align: center;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .workflow-step::after {
+      content: '';
+      position: absolute;
+      top: 36px;
+      right: -12px;
+      width: 24px;
+      height: 2px;
+      background: var(--primary-lightest);
+    }
+
+    .workflow-step:last-child::after {
+      display: none;
+    }
+
+    .step-number {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid var(--primary-lightest);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 auto 20px;
+      font-family: var(--font-serif);
+      transition: var(--transition);
+    }
+
+    .workflow-step:hover .step-number {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .workflow-step h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .workflow-step p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ====== CTA ====== */
+    .cta-section {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      text-align: center;
+      padding: 80px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+      top: -100px;
+      right: -100px;
+      border-radius: 50%;
+    }
+
+    .cta-section h2 {
+      font-family: var(--font-serif);
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ====== 新闻动态 ====== */
+    .news-section {
+      background: var(--bg-white);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .news-main {
+      grid-row: span 2;
+      background: white;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      transition: var(--transition);
+    }
+
+    .news-main:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .news-main-img {
+      height: 280px;
+      background: linear-gradient(135deg, var(--primary-bg), var(--primary-lightest));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+    }
+
+    .news-main-body {
+      padding: 28px;
+    }
+
+    .news-main-body .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 16px;
+      margin-bottom: 12px;
+    }
+
+    .news-main-body h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .news-main-body p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .news-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-light);
+    }
+
+    .news-side {
+      background: white;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 24px;
+      display: flex;
+      gap: 16px;
+      transition: var(--transition);
+    }
+
+    .news-side:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary-lightest);
+    }
+
+    .news-side-img {
+      width: 100px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .news-side-body .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-bottom: 6px;
+    }
+
+    .news-side-body h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    .news-side-body .date {
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    @media (max-width: 768px) {
+      .hero-container { grid-template-columns: 1fr; gap: 40px; }
+      .hero-title { font-size: 36px; }
+      .hero-visual { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .herbs-scroll { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .workflow-steps { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .workflow-step::after { display: none; }
+      .news-grid { grid-template-columns: 1fr; }
+      .news-main { grid-row: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">鉴</div>
+        <span>灵草鉴</span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="active">首页</a>
+        <a href="identify.html">AI鉴定</a>
+        <a href="herb-database.html">药材百科</a>
+        <a href="research.html">研究资讯</a>
+        <a href="about.html">关于我们</a>
+        <a href="identify.html" class="nav-cta">开始鉴定</a>
+      </div>
+      <div class="nav-toggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero 区域 -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          AI驱动 · 智能鉴定
+        </div>
+        <h1 class="hero-title">
+          传统中药<br><span class="highlight">AI智能鉴定</span>
+        </h1>
+        <p class="hero-desc">
+          基于深度学习与计算机视觉技术，实现对中药材的快速、精准鉴定。覆盖800+常见药材，识别准确率达98.6%，助力中药行业数字化转型与品质保障。
+        </p>
+        <div class="hero-actions">
+          <a href="identify.html" class="btn btn-primary btn-lg">立即鉴定 →</a>
+          <a href="herb-database.html" class="btn btn-outline btn-lg">药材百科</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="number">800+</div>
+            <div class="label">药材品种</div>
+          </div>
+          <div class="hero-stat">
+            <div class="number">98.6%</div>
+            <div class="label">识别准确率</div>
+          </div>
+          <div class="hero-stat">
+            <div class="number">50万+</div>
+            <div class="label">累计鉴定</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-card-main">
+          <div class="hero-card-header">
+            <div class="icon-circle">🔬</div>
+            <div>
+              <div class="title">AI鉴定结果</div>
+              <div class="subtitle">分析完成 · 0.8秒</div>
+            </div>
+          </div>
+          <div class="hero-card-img">
+            <div class="upload-icon">🌿</div>
+          </div>
+          <div class="hero-result-tags">
+            <span class="hero-result-tag" style="background:#D8F3DC;color:#1B4332;">人参</span>
+            <span class="hero-result-tag" style="background:#FEF3C7;color:#92400E;">五加科</span>
+            <span class="hero-result-tag" style="background:#DBEAFE;color:#1E40AF;">补虚药</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-muted);margin-bottom:4px;">
+            <span>置信度</span><span style="color:var(--primary);font-weight:600;">98.6%</span>
+          </div>
+          <div class="confidence-bar">
+            <div class="confidence-fill" style="width:98.6%"></div>
+          </div>
+        </div>
+
+        <div class="hero-float-card card-1">
+          <div class="float-stat">
+            <div class="icon" style="background:#D8F3DC;">✅</div>
+            <div>
+              <div class="value">98.6%</div>
+              <div class="desc">鉴定准确率</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-float-card card-2">
+          <div class="float-stat">
+            <div class="icon" style="background:#FEF3C7;">⚡</div>
+            <div>
+              <div class="value">0.8s</div>
+              <div class="desc">平均鉴定时间</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 特色功能 -->
+  <section class="features section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">核心功能</span>
+        <h2 class="section-title">AI赋能中药鉴定全流程</h2>
+        <p class="section-desc">融合传统中药学与前沿AI技术，构建从图像采集到智能分析的一站式鉴定解决方案</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon" style="background:#D8F3DC;">🔍</div>
+          <h3>智能图像识别</h3>
+          <p>基于ResNet与Vision Transformer双模型架构，支持药材原植物、饮片、粉末等多形态识别，单次鉴定仅需0.8秒。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon" style="background:#FEF3C7;">🧬</div>
+          <h3>性状特征分析</h3>
+          <p>自动提取药材形状、颜色、纹理、气味等性状特征，与《中国药典》标准进行智能比对，生成专业鉴定报告。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon" style="background:#DBEAFE;">📊</div>
+          <h3>DNA条形码辅助</h3>
+          <p>整合DNA条形码技术，对近缘种和易混淆品种进行分子层面鉴别，解决传统形态学难以区分的鉴定难题。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon" style="background:#F3E8FF;">📋</div>
+          <h3>药典标准对照</h3>
+          <p>内置2025版《中国药典》全量数据，自动对照药典规定的鉴别项、检查项和含量测定标准，判定是否符合规范。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon" style="background:#FEE2E2;">⚠️</div>
+          <h3>伪品与掺假检测</h3>
+          <p>针对市场上常见伪品、掺假、增重等违规手段进行智能检测，守护中药材质量安全底线。</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon" style="background:#E0F2FE;">📚</div>
+          <h3>知识图谱关联</h3>
+          <p>构建中药材知识图谱，关联药性、归经、配伍、功效等信息，实现从鉴定到应用的全链路知识服务。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI技术展示 -->
+  <section class="tech-showcase section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">技术架构</span>
+        <h2 class="section-title">前沿AI技术驱动</h2>
+        <p class="section-desc">基于多模态深度学习架构，构建中药鉴定领域最先进的AI引擎</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card reveal">
+          <div class="tech-step">Step 01</div>
+          <h3>多模态特征提取</h3>
+          <p>融合图像特征（颜色直方图、LBP纹理、形状描述子）与光谱特征（近红外、拉曼光谱），构建药材多维特征向量空间。</p>
+          <div class="tech-metrics">
+            <div class="tech-metric">
+              <div class="value">128</div>
+              <div class="label">特征维度</div>
+            </div>
+            <div class="tech-metric">
+              <div class="value">6</div>
+              <div class="label">模态融合</div>
+            </div>
+          </div>
+        </div>
+        <div class="tech-card reveal">
+          <div class="tech-step">Step 02</div>
+          <h3>双模型协同推理</h3>
+          <p>ResNet-152提取深层视觉特征，Vision Transformer捕捉全局上下文关系，双模型通过注意力机制进行协同推理决策。</p>
+          <div class="tech-metrics">
+            <div class="tech-metric">
+              <div class="value">98.6%</div>
+              <div class="label">Top-1准确率</div>
+            </div>
+            <div class="tech-metric">
+              <div class="value">0.8s</div>
+              <div class="label">推理延迟</div>
+            </div>
+          </div>
+        </div>
+        <div class="tech-card reveal">
+          <div class="tech-step">Step 03</div>
+          <h3>知识图谱推理</h3>
+          <p>构建包含800+药材、5000+性状特征、30000+配伍关系的知识图谱，通过图神经网络进行关联推理与辅助鉴别。</p>
+          <div class="tech-metrics">
+            <div class="tech-metric">
+              <div class="value">30K+</div>
+              <div class="label">知识三元组</div>
+            </div>
+            <div class="tech-metric">
+              <div class="value">5</div>
+              <div class="label">关系类型</div>
+            </div>
+          </div>
+        </div>
+        <div class="tech-card reveal">
+          <div class="tech-step">Step 04</div>
+          <h3>可解释性分析</h3>
+          <p>采用Grad-CAM热力图与注意力可视化技术，展示AI鉴定的关键决策区域，让鉴定过程透明可追溯、可解释。</p>
+          <div class="tech-metrics">
+            <div class="tech-metric">
+              <div class="value">100%</div>
+              <div class="label">结果可解释</div>
+            </div>
+            <div class="tech-metric">
+              <div class="value">可视化</div>
+              <div class="label">决策热力图</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 常见药材 -->
+  <section class="herbs-showcase section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">药材速览</span>
+        <h2 class="section-title">常见中药材智能鉴定</h2>
+        <p class="section-desc">涵盖解表、清热、补虚、活血等主要药类，持续扩展品种库</p>
+      </div>
+      <div class="herbs-scroll">
+        <div class="herb-card reveal">
+          <div class="herb-card-img">
+            <img src="images/ginseng.png" alt="人参" onerror="this.style.display='none';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.innerHTML+='<span class=herb-emoji>🌿</span>'">
+          </div>
+          <div class="herb-card-body">
+            <h3>人参</h3>
+            <div class="latin-name">Panax ginseng C.A.Mey.</div>
+            <div class="herb-tags">
+              <span class="herb-tag warm">温</span>
+              <span class="herb-tag neutral">甘</span>
+              <span class="herb-tag rare">珍稀</span>
+            </div>
+            <div class="brief">大补元气，复脉固脱，补脾益肺，生津养血，安神益智。</div>
+          </div>
+        </div>
+        <div class="herb-card reveal">
+          <div class="herb-card-img">
+            <img src="images/huangqi.png" alt="黄芪" onerror="this.style.display='none';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.innerHTML+='<span class=herb-emoji>🍃</span>'">
+          </div>
+          <div class="herb-card-body">
+            <h3>黄芪</h3>
+            <div class="latin-name">Astragalus membranaceus</div>
+            <div class="herb-tags">
+              <span class="herb-tag warm">温</span>
+              <span class="herb-tag neutral">甘</span>
+            </div>
+            <div class="brief">补气升阳，固表止汗，利水消肿，生津养血，托毒排脓。</div>
+          </div>
+        </div>
+        <div class="herb-card reveal">
+          <div class="herb-card-img">
+            <img src="images/danggui.png" alt="当归" onerror="this.style.display='none';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.innerHTML+='<span class=herb-emoji>🌸</span>'">
+          </div>
+          <div class="herb-card-body">
+            <h3>当归</h3>
+            <div class="latin-name">Angelica sinensis (Oliv.) Diels</div>
+            <div class="herb-tags">
+              <span class="herb-tag warm">温</span>
+              <span class="herb-tag neutral">甘辛</span>
+            </div>
+            <div class="brief">补血活血，调经止痛，润肠通便。为补血之圣药。</div>
+          </div>
+        </div>
+        <div class="herb-card reveal">
+          <div class="herb-card-img">
+            <img src="images/jinyinhua.png" alt="金银花" onerror="this.style.display='none';this.parentElement.style.display='flex';this.parentElement.style.alignItems='center';this.parentElement.style.justifyContent='center';this.parentElement.innerHTML+='<span class=herb-emoji>🌼</span>'">
+          </div>
+          <div class="herb-card-body">
+            <h3>金银花</h3>
+            <div class="latin-name">Lonicera japonica Thunb.</div>
+            <div class="herb-tags">
+              <span class="herb-tag cool">寒</span>
+              <span class="herb-tag neutral">甘</span>
+            </div>
+            <div class="brief">清热解毒，疏散风热。为清热解毒之要药。</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:40px;">
+        <a href="herb-database.html" class="btn btn-outline">查看全部药材 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数据统计 -->
+  <section class="stats-section section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <div class="stat-icon">🌿</div>
+          <div class="stat-number">800+</div>
+          <div class="stat-label">药材品种覆盖</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-number">98.6%</div>
+          <div class="stat-label">鉴定准确率</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-number">0.8s</div>
+          <div class="stat-label">平均鉴定时间</div>
+        </div>
+        <div class="stat-card reveal">
+          <div class="stat-icon">👥</div>
+          <div class="stat-number">50万+</div>
+          <div class="stat-label">累计鉴定次数</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工作流程 -->
+  <section class="workflow section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">使用流程</span>
+        <h2 class="section-title">四步完成智能鉴定</h2>
+        <p class="section-desc">从图像采集到获取专业报告，全流程智能化操作</p>
+      </div>
+      <div class="workflow-steps">
+        <div class="workflow-step reveal">
+          <div class="step-number">1</div>
+          <h4>上传图像</h4>
+          <p>拍照或上传药材图像，支持原植物、饮片、粉末等多种形态</p>
+        </div>
+        <div class="workflow-step reveal">
+          <div class="step-number">2</div>
+          <h4>AI分析</h4>
+          <p>深度学习模型自动提取特征，多模态融合分析药材性状</p>
+        </div>
+        <div class="workflow-step reveal">
+          <div class="step-number">3</div>
+          <h4>智能比对</h4>
+          <p>与药典标准及知识图谱进行比对，判别真伪与品质等级</p>
+        </div>
+        <div class="workflow-step reveal">
+          <div class="step-number">4</div>
+          <h4>出具报告</h4>
+          <p>生成专业鉴定报告，含鉴定结论、特征分析和药典对照</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 新闻动态 -->
+  <section class="news-section section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-tag">最新动态</span>
+        <h2 class="section-title">研究资讯与行业动态</h2>
+        <p class="section-desc">关注AI中药鉴定领域最新进展</p>
+      </div>
+      <div class="news-grid">
+        <a href="research.html" class="news-main reveal">
+          <div class="news-main-img">🧪</div>
+          <div class="news-main-body">
+            <span class="tag">技术前沿</span>
+            <h3>多模态融合模型在中药材鉴定中的突破性进展</h3>
+            <p>研究团队提出融合视觉、光谱、分子特征的多模态鉴定框架，在易混淆品种鉴定中取得99.2%的准确率，为中药材精准鉴定开辟新路径。</p>
+            <div class="news-meta">
+              <span>2026-04-28</span>
+              <span>阅读 5 分钟</span>
+            </div>
+          </div>
+        </a>
+        <a href="research.html" class="news-side reveal">
+          <div class="news-side-img" style="background:#D8F3DC;">📜</div>
+          <div class="news-side-body">
+            <span class="tag">政策法规</span>
+            <h4>2025版《中国药典》新增AI鉴定方法指导原则</h4>
+            <div class="date">2026-04-25</div>
+          </div>
+        </a>
+        <a href="research.html" class="news-side reveal">
+          <div class="news-side-img" style="background:#FEF3C7;">🏆</div>
+          <div class="news-side-body">
+            <span class="tag">行业动态</span>
+            <h4>灵草鉴平台获中医药科技创新一等奖</h4>
+            <div class="date">2026-04-20</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container" style="position:relative;z-index:1;">
+      <h2>开启AI中药鉴定之旅</h2>
+      <p>上传一张药材图片，体验AI智能鉴定的精准与高效</p>
+      <div style="display:flex;gap:16px;justify-content:center;">
+        <a href="identify.html" class="btn btn-white btn-lg">立即体验 →</a>
+        <a href="about.html" class="btn btn-lg" style="border:1.5px solid rgba(255,255,255,0.4);color:white;">了解更多</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="logo-icon">鉴</div>
+            <span>灵草鉴</span>
+          </div>
+          <p>基于前沿AI技术的中药材智能鉴定平台，致力于推动中药行业数字化转型与品质保障，传承中医药文化精髓。</p>
+          <div class="footer-social">
+            <a href="#">微</a>
+            <a href="#">博</a>
+            <a href="#">知</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>产品服务</h4>
+          <ul>
+            <li><a href="identify.html">AI智能鉴定</a></li>
+            <li><a href="herb-database.html">药材百科</a></li>
+            <li><a href="#">批量鉴定</a></li>
+            <li><a href="#">API接口</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>学术资源</h4>
+          <ul>
+            <li><a href="research.html">研究论文</a></li>
+            <li><a href="#">数据集下载</a></li>
+            <li><a href="#">模型开源</a></li>
+            <li><a href="#">技术博客</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>关于我们</h4>
+          <ul>
+            <li><a href="about.html">团队介绍</a></li>
+            <li><a href="#">合作伙伴</a></li>
+            <li><a href="#">联系方式</a></li>
+            <li><a href="#">加入我们</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>2026 灵草鉴 AI中药鉴定平台 · 传承与创新</span>
+        <span>京ICP备2026XXXXXX号</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
