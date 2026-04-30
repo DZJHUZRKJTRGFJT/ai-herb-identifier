@@ -1,0 +1,17 @@
+{
+  "name": "ai-herb-identifier",
+  "version": "5.0.0",
+  "description": "灵草鉴 - AI中药鉴定系统",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "setup": "npm install"
+  },
+  "dependencies": {
+    "agent-browser": "^0.26.0",
+    "sharp": "^0.33.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
